@@ -24,14 +24,9 @@ $ python3 script.py --period 1d --t1 20201010T204603Z --t2 20201115T123456Z --tz
 
 ### Run on Docker (Python)
 
-- Build image locally and run the docker container
+- Build image and run the docker container
 ```
 $ docker build -t local/periodic .
-$ docker run --rm local/periodic --period 1d --t1 20201010T204603Z --t2 20201115T123456Z --tz Europe/Athens
-```
-- Alternatively, run the docker container directly from Docker Hub.
-TODO
-```
 $ docker run --rm local/periodic --period 1d --t1 20201010T204603Z --t2 20201115T123456Z --tz Europe/Athens
 ```
 
