@@ -7,10 +7,11 @@ $ cd matchtimestamps
 ```
 
 ### Python CLI
-- Change to python3 directory and create virtual environment
+- Change to python3 directory, create and activate virtual environment
 ```
 $ cd python3
 $ python3 -m venv env
+$ source env/bin/activate
 ```
 - Install necessary packages
 ```
