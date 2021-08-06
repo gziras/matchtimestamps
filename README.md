@@ -21,6 +21,10 @@ $ pip install python-dateutil pytz
 $ python3 script.py --help
 $ python3 script.py --period 1d --t1 20201010T204603Z --t2 20201115T123456Z --tz Europe/Athens 
 ```
+- Unit-test. Execute the test suite.
+```
+$ python3 -m unittest -v test.py
+```
 
 
 ### Run on Docker (Python)
