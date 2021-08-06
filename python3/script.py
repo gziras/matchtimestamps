@@ -1,20 +1,28 @@
-def main():
-    import argparse
-    import sys
-    from datetime import datetime
-    from dateutil.relativedelta import relativedelta
-    from dateutil import tz
-    import pytz
+import argparse
+import sys
+import pytz
 
+def parse_args(args):
     parser = argparse.ArgumentParser(description='Matching timestamps of a periodic task.')
     parser.add_argument('--period', dest='period', action='store', help='specify the period', required=True, choices=['1h', '1d', '1mo', '1y']) #'1w', '1m', '1s'
     parser.add_argument('--t1', dest='startpoint', action='store', help='startpoint in UTC', required=True)
     parser.add_argument('--t2', dest='endpoint', action='store', help='endpoint in UTC', required=True)
     parser.add_argument('--tz', dest='timezone', metavar='timezone', action='store', help='specify the timezone', required=True, choices=pytz.all_timezones)
     try:
-        args = parser.parse_args()
+        return parser.parse_args(args)
     except SystemExit:
         sys.exit(10)
+
+def main(mode='normal', test_param = None):
+    from datetime import datetime
+    from dateutil.relativedelta import relativedelta
+    from dateutil import tz
+    
+    if mode == 'unittest': # Unittest
+        args = parse_args(test_param)
+    else:
+        args = parse_args(sys.argv[1:])
+
     try:
         timezone = args.timezone
         t1_utc = datetime.strptime(args.startpoint, "%Y%m%dT%H%M%SZ").astimezone(pytz.utc) # t1 in UTC
@@ -26,7 +34,7 @@ def main():
     t1 = t1_utc.replace(tzinfo=pytz.utc).astimezone(tz.gettz(timezone)) # store t1 in provided TIMEZONE
     t2 = t2_utc.replace(tzinfo=pytz.utc).astimezone(tz.gettz(timezone)) # store t2 in provided TIMEZONE
 
-    # Truncate datetime based on period provided.
+    # Truncate t1 datetime based on period provided.
     if args.period == '1h':
         t1 = t1 + relativedelta(hours=+1)
         t1 = t1.replace(minute=0, second=0)
@@ -49,10 +57,11 @@ def main():
     ptlist = [] # initialize a list of dates between t1 and t2.
     dct = {choices[args.period]:+1} # pack arguments for relative delta to achieve extensibility.
     while date < t2:
-        ptlist.append(date)
+        date_utc = date.replace(tzinfo=tz.gettz(timezone)).astimezone(pytz.utc).strftime("\"%Y%m%dT%H%M%SZ\"")  #Revert to UTC and print in the appropriate layout.)
+        print(date_utc)
+        ptlist.append(date_utc) #append to list for unit-testing.
         date = date + relativedelta(**dct)
-    for obj in ptlist:
-        print(obj.replace(tzinfo=tz.gettz(timezone)).astimezone(pytz.utc).strftime("\"%Y%m%dT%H%M%SZ\""))  #Revert to UTC and print in the appropriate form.
+    return ptlist
 
 if __name__ == "__main__":
     main()
